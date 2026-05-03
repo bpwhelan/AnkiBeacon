@@ -18,22 +18,35 @@ edit `config.json` directly while developing.
 
 ```json
 {
-  "urls": [
-    "http://127.0.0.1:7275/anki/events"
-  ],
-  "payload_mode": "note_id",
-  "timeout_seconds": 5,
-  "headers": {},
-  "show_error_tooltips": true,
-  "heartbeat_enabled": true,
-  "heartbeat_interval_seconds": 10,
-  "heartbeat_urls": [],
-  "heartbeat_show_error_tooltips": false
+  "defaults": {
+    "timeout_seconds": 5,
+    "headers": {},
+    "show_error_tooltips": true
+  },
+  "operations": [
+    {
+      "operation": "note_added",
+      "enabled": true,
+      "urls": [
+        "http://127.0.0.1:7275/anki/events"
+      ],
+      "payload_mode": "note_id"
+    },
+    {
+      "operation": "heartbeat",
+      "enabled": true,
+      "urls": [],
+      "fallback_operation": "note_added",
+      "interval_seconds": 10,
+      "show_error_tooltips": false
+    }
+  ]
 }
 ```
 
-If `heartbeat_urls` is empty, heartbeats are sent to the normal `urls` and the
-receiver should branch on `event`.
+Each entry in `operations` owns the URLs and options for one event stream. If
+the `heartbeat` operation has no URLs, it uses `fallback_operation` to send
+heartbeats to the `note_added` URLs, and the receiver should branch on `event`.
 
 ## Events
 

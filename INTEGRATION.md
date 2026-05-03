@@ -3,9 +3,9 @@
 This document is for apps, services, and coding agents that want to consume
 events from the AnkiBeacon add-on without polling Anki continuously.
 
-The current release emits new-note events only. The add-on package/folder name
-remains `new_card_created`, but the public project name is AnkiBeacon so the
-protocol can grow to more event types later.
+The current release emits `note_added` and `heartbeat` events. The add-on
+package/folder name remains `new_card_created`, but the public project name is
+AnkiBeacon so the protocol can grow to more event types later.
 
 ## Goal
 
@@ -16,9 +16,11 @@ Use polling only as a fallback when heartbeats disappear.
 
 The add-on sends HTTP `POST` requests with JSON bodies.
 
-- Note-created events go to `urls`.
-- Heartbeats go to `heartbeat_urls`.
-- If `heartbeat_urls` is empty, heartbeats go to `urls` and the receiver must branch on `event`.
+- Each configured operation owns its own `urls`.
+- Note-created events go to the `note_added` operation URLs.
+- Heartbeats go to the `heartbeat` operation URLs.
+- If the `heartbeat` operation has empty `urls`, it uses `fallback_operation`
+  to borrow URLs from another operation, normally `note_added`.
 
 ## Event Types
 
@@ -62,7 +64,7 @@ All payloads include:
 - `source`
 - `created_at`
 
-If `payload_mode` is `note`, it also includes:
+If the `note_added` operation uses `payload_mode: "note"`, it also includes:
 
 - `note_type_id`
 - `note_type_name`
@@ -126,4 +128,4 @@ Or two endpoints if you want routing separation:
 - `POST /anki/new-card`
 - `POST /anki/heartbeat`
 
-The addon supports either model through config.
+The addon supports either model through operation-specific config.
