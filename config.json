@@ -1,0 +1,14 @@
+{
+  "urls": [
+    "http://127.0.0.1:7275/anki/events",
+    "http://127.0.0.1:9470/anki/events"
+  ],
+  "payload_mode": "note_id",
+  "timeout_seconds": 5,
+  "headers": {},
+  "show_error_tooltips": true,
+  "heartbeat_enabled": true,
+  "heartbeat_interval_seconds": 10,
+  "heartbeat_urls": [],
+  "heartbeat_show_error_tooltips": false
+}
